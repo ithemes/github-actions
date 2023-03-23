@@ -33,10 +33,6 @@ jobs:
           token: ${{ secrets.MACHINE_USER_PAT }}
           submodules: "recursive"
 
-      - name: Replace LION Strings with Text Domain
-        uses: ./.github/actions/lion-i18n
-        with:
-          textdomain: my-plugin
 
       - name: Install composer dependencies
         uses: php-actions/composer@v6
@@ -55,6 +51,14 @@ jobs:
           npm install -g npm@7
           npm ci
           npm run build
+
+      - name: Checkout Actions Repo
+        uses: actions/checkout@v2
+
+      - name: Replace LION Strings with Text Domain
+        uses: ./.github/actions/lion-i18n
+        with:
+          textdomain: my-plugin
 
       - name: Generate pot file
         run: |
