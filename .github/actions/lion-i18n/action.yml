@@ -1,0 +1,15 @@
+name: Replace LION Strings with Text Domain
+description: Replaces all instances of LION with a specified text domain.
+
+inputs:
+  textdomain:
+    description: 'The text domain to use in place of LION.'
+    required: true
+    default: ''
+
+on:
+jobs:
+runs:
+  using: 'bash'
+  shell: 'bash'
+  entrypoint: './entrypoint.sh'
