@@ -4,9 +4,10 @@ on:
   workflow_call:
     inputs:
       ref:
-        description: 'Git Commit Ref (branch, tag, or hash)'
-        required: true
+        description: 'Git Commit Reference (branch, tag, or hash - optional)'
+        required: false
         type: string
+        default: ${{ github.ref }}
       plugin_slug:
         description: 'Plugin Slug'
         required: true
