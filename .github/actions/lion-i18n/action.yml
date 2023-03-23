@@ -13,5 +13,5 @@ runs:
     - name: Replace strings
       shell: bash
       run: |
-        find . -type f -print0 | xargs -0 sed -i "s/\([Tt]ext [Dd]omain:\s*\)LION\b/\1it-l10n-$INPUT_TEXTDOMAIN/"
-        find . -type f -print0 | xargs -0 sed -i "s/\(['\"]\)LION\(['\"]\)/\1it-l10n-$INPUT_TEXTDOMAIN\2/"
+        find . -type f -print0 | xargs -0 sed -i "s/\([Tt]ext [Dd]omain:\s*\)LION\b/\1${{ inputs.textdomain }}/"
+        find . -type f -print0 | xargs -0 sed -i "s/\(['\"]\)LION\(['\"]\)/\1${{ inputs.textdomain }}\2/"
