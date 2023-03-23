@@ -34,7 +34,7 @@ jobs:
           submodules: "recursive"
 
       - name: Plugin LION
-        run: bash ithemes/ithemes-github-actions/.github/lion.sh ${{ github.event.repository.name }}
+        run: bash ithemes/github-actions/.github/lion.sh ${{ github.event.repository.name }}
 
       - name: Install composer dependencies
         uses: php-actions/composer@v6
