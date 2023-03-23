@@ -51,7 +51,9 @@ jobs:
           npm ci
           npm run build
 
-      - uses: ithemes/github-actions/.github/actions/lion-i18n
+      - uses: ithemes/github-actions/.github/actions/lion-i18n@master
+        with:
+          textdomain: ${{ inputs.plugin_slug }}
 
       - name: Generate pot file
         run: |
