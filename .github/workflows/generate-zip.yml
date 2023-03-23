@@ -34,7 +34,7 @@ jobs:
           submodules: "recursive"
 
       - name: Replace LION Strings with Text Domain
-        uses: ./.github/actions/replace-lion-strings-with-text-domain
+        uses: ./.github/actions/lion-i18n
         with:
           textdomain: my-plugin
 
