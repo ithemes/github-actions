@@ -33,7 +33,6 @@ jobs:
           token: ${{ secrets.MACHINE_USER_PAT }}
           submodules: "recursive"
 
-
       - name: Install composer dependencies
         uses: php-actions/composer@v6
         if: ${{ inputs.install_composer_packages }}
@@ -53,12 +52,10 @@ jobs:
           npm run build
 
       - name: Checkout Actions Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Replace LION Strings with Text Domain
-        uses: ./.github/actions/lion-i18n
-        with:
-          textdomain: my-plugin
+        uses: ithemes/github-actions/.github/actions/lion-i18n
 
       - name: Generate pot file
         run: |
