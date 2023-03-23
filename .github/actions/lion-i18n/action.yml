@@ -7,9 +7,9 @@ inputs:
     required: true
     default: ''
 
-on:
-jobs:
 runs:
-  using: 'bash'
-  shell: 'bash'
-  entrypoint: './entrypoint.sh'
+  using: "composite"
+  steps:
+    - name: Replace strings
+      shell: bash
+      run: './entrypoint.sh'
