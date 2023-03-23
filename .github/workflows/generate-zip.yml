@@ -34,7 +34,7 @@ jobs:
           submodules: "recursive"
 
       - name: Plugin LION
-        run: bash $GITHUB_WORKSPACE/.github/lion.sh ${{ github.event.repository.name }}
+        run: bash $GITHUB_WORKSPACE/../${{ github.event.repository.owner }}/${{ github.event.repository.name }}/.github/lion.sh ${{ github.event.repository.name }}
 
       - name: Install composer dependencies
         uses: php-actions/composer@v6
