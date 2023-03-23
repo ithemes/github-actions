@@ -33,8 +33,10 @@ jobs:
           token: ${{ secrets.MACHINE_USER_PAT }}
           submodules: "recursive"
 
-      - name: Plugin LION
-        run: bash ithemes/github-actions/.github/lion.sh ${{ github.event.repository.name }}
+      - name: Replace LION Strings with Text Domain
+        uses: ./.github/actions/replace-lion-strings-with-text-domain
+        with:
+          textdomain: my-plugin
 
       - name: Install composer dependencies
         uses: php-actions/composer@v6
