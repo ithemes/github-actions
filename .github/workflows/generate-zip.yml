@@ -27,12 +27,14 @@ jobs:
   generate-zip:
     runs-on: ubuntu-latest
     steps:
+      # Check out the repository
       - uses: actions/checkout@v3
         with:
           ref: ${{ inputs.ref }}
           token: ${{ secrets.MACHINE_USER_PAT }}
           submodules: "recursive"
 
+      # Install composer dependencies
       - name: Install composer dependencies
         uses: php-actions/composer@v6
         if: ${{ inputs.install_composer_packages }}
@@ -40,10 +42,12 @@ jobs:
           php_version: 7.4
           dev: no
 
+      # Set up Node.js
       - uses: actions/setup-node@v3
         with:
           node-version: '12'
 
+      # Install npm dependencies and build for translation
       - name: Install npm dependencies & build for translation
         if: ${{ inputs.install_npm_packages }}
         run: |
@@ -51,10 +55,12 @@ jobs:
           npm ci
           npm run build
 
+      # Replace text strings for internationalization
       - uses: ithemes/github-actions/.github/actions/lion-i18n@master
         with:
           textdomain: ${{ inputs.plugin_slug }}
 
+      # Generate POT file for translations
       - name: Generate pot file
         run: |
           curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -62,11 +68,16 @@ jobs:
           mv wp-cli.phar /usr/local/bin/wp
           php -d xdebug.mode=off "$(which wp)" i18n make-pot ${{github.workspace}} ${{github.workspace}}/lang/${{ inputs.plugin_slug }}.pot --exclude="$(cat .distignore | tr "\n" "," | sed 's/,$/ /' | tr " " "\n"),src/*.js,src/**/*.js,blocks/**/*.js"
 
+      # Generate plugin zip file
       - name: Generate plugin zip file
-        run: rsync -rc --exclude-from="$GITHUB_WORKSPACE/.distignore" "${GITHUB_WORKSPACE}/" ${{ inputs.plugin_slug }}/ --delete --delete-excluded
+        run: |
+          rsync -rc --exclude-from="$GITHUB_WORKSPACE/.distignore" "${GITHUB_WORKSPACE}/" ${{ inputs.plugin_slug }}/ --delete --delete-excluded
+          zip -r ${{ inputs.plugin_slug }}.zip ${{ inputs.plugin_slug }}  # Create a ZIP archive of the plugin directory
+          rm -rf ${{ inputs.plugin_slug }}  # Clean up the temporary directory after creating the ZIP file
 
+      # Upload the plugin artifact as a ZIP file
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.plugin_slug }}
-          path: ${{ inputs.plugin_slug }}
+          path: ${{ inputs.plugin_slug }}.zip
