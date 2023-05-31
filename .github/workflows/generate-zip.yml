@@ -72,6 +72,8 @@ jobs:
       - name: Generate plugin zip file
         run: |
           rsync -rc --exclude-from="$GITHUB_WORKSPACE/.distignore" "${GITHUB_WORKSPACE}/" ${{ inputs.plugin_slug }}/ --delete --delete-excluded
+          (cd ${{ inputs.plugin_slug }} && zip -r ../${{ inputs.plugin_slug }}.zip .) # Create a ZIP archive of the plugin directory with the correct structure
+          rm -rf ${{ inputs.plugin_slug }}  # Clean up the temporary directory after creating the ZIP file
 
       # Upload the plugin artifact as a ZIP file
       - name: Upload plugin artifact
