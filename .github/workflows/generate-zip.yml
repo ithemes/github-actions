@@ -72,12 +72,10 @@ jobs:
       - name: Generate plugin zip file
         run: |
           rsync -rc --exclude-from="$GITHUB_WORKSPACE/.distignore" "${GITHUB_WORKSPACE}/" ${{ inputs.plugin_slug }}/ --delete --delete-excluded
-          cd ${{ inputs.plugin_slug }} 
-          zip -r ../${{ inputs.plugin_slug }}.zip . # Create a ZIP archive of the plugin directory with the correct structure
 
       # Upload the plugin artifact as a ZIP file
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.plugin_slug }}
-          path: ${{github.workspace}}/${{ inputs.plugin_slug }}.zip
+          path: ${{github.workspace}}/${{ inputs.plugin_slug }}
