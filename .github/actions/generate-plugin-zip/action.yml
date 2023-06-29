@@ -1,0 +1,23 @@
+name: Generate plugin zip
+description: Generates a zip file for a plugin and uploads it as an artifact
+
+inputs:
+  plugin_slug:
+    description: 'The slug of the plugin to generate a zip file for'
+    required: true
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate plugin zip file
+      shell: bash
+      run: |
+        rsync -rc --exclude-from="${{github.workspace}}/.distignore" "${{github.workspace}}/" ${{inputs.plugin_slug}}/ --delete --delete-excluded
+
+    # Upload the plugin artifact as a ZIP file
+    - name: Upload plugin artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{inputs.plugin_slug}}
+        path: ${{github.workspace}}/${{inputs.plugin_slug}}

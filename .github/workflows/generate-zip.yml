@@ -69,13 +69,6 @@ jobs:
           php -d xdebug.mode=off "$(which wp)" i18n make-pot ${{github.workspace}} ${{github.workspace}}/lang/${{ inputs.plugin_slug }}.pot --exclude="$(cat .distignore | tr "\n" "," | sed 's/,$/ /' | tr " " "\n"),src/*.js,src/**/*.js,blocks/**/*.js"
 
       # Generate plugin zip file
-      - name: Generate plugin zip file
-        run: |
-          rsync -rc --exclude-from="$GITHUB_WORKSPACE/.distignore" "${GITHUB_WORKSPACE}/" ${{ inputs.plugin_slug }}/ --delete --delete-excluded
-
-      # Upload the plugin artifact as a ZIP file
-      - name: Upload plugin artifact
-        uses: actions/upload-artifact@v3
+      - uses: ithemes/github-actions/.github/actions/generate-plugin-zip@master
         with:
-          name: ${{ inputs.plugin_slug }}
-          path: ${{github.workspace}}/${{ inputs.plugin_slug }}
+          plugin_slug: ${{ inputs.plugin_slug }}
