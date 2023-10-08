@@ -13,6 +13,9 @@ on:
         type: string
 
     secrets:
+      GITHUB_TOKEN:
+        description: 'Github auth token'
+        required: true
       AWS_ACCESS_KEY_ID:
         description: 'AWS Access Key ID'
         required: true
