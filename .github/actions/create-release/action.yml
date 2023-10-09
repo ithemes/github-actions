@@ -1,0 +1,90 @@
+name: Create Release
+description: Create a release of the plugin.
+
+inputs:
+  plugin_slug:
+    description: 'The slug of the plugin to release'
+    required: true
+  ref:
+    description: 'Git Commit Reference (branch, tag, or hash)'
+    required: true
+  github_token:
+    description: 'Github Token'
+    required: true
+  plugin_deploy_key:
+    description: 'Plugin Deploy Key for api.ithemes.com'
+    required: true
+  aws_access_key_id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws_access_key_secret:
+    description: 'AWS Access Key Secret'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Get Plugin Version
+      id: plugin_version
+      shell: bash
+      run: |
+        echo "VER=$(grep "Version:" *.php | head -1 | awk '{print $NF}')" >> $GITHUB_OUTPUT
+
+    - name: Get Minimum WP Version
+      id: min_wp_version
+      shell: bash
+      run: |
+        echo "VER=$(grep "Requires at least:" *.php | head -1 | awk '{print $NF}')" >> $GITHUB_OUTPUT
+
+    - name: Get Minimum PHP Version
+      id: min_php_version
+      shell: bash
+      run: |
+        echo "VER=$(grep "Requires PHP:" *.php | head -1 | awk '{print $NF}')" >> $GITHUB_OUTPUT
+
+    - name: Generate plugin zip file
+      shell: bash
+      run: |
+        rsync -rc --exclude-from="${{github.workspace}}/.distignore" "${{github.workspace}}/" ${{inputs.plugin_slug}}/ --delete --delete-excluded
+        zip -r ${{inputs.plugin_slug}}.zip ${{inputs.plugin_slug}}/
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      with:
+        tag_name: ${{ steps.plugin_version.outputs.VER }}
+        release_name: Release v${{ steps.plugin_version.outputs.VER }}
+        draft: false
+        prerelease: false
+        target_commitish: ${{ inputs.ref }}
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{inputs.plugin_slug}}.zip
+        asset_name: ${{ inputs.plugin_slug }}.zip
+        asset_content_type: application/zip
+
+    - name: Upload to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_access_key_secret }}
+      shell: bash
+      run: |
+        aws s3 cp --region us-east-1 ${{ inputs.plugin_slug }}.zip s3://downloads.ithemes.com/products/plugins/${{ inputs.plugin_slug }}/${{ inputs.plugin_slug }}-${{ steps.plugin_version.outputs.VER }}.zip
+        aws s3 cp --region us-east-1 ${{ inputs.plugin_slug }}.zip s3://downloads.ithemes.com/products/plugins/${{ inputs.plugin_slug }}/${{ inputs.plugin_slug }}.zip
+
+    - name: Deploy to API
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://api.ithemes.com/product/deploy_plugin_update'
+        method: 'POST'
+        customHeaders: '{"Authorization": "${{ inputs.plugin_deploy_key }}"}'
+        data: '{"slug": "${{ inputs.plugin_slug }}", "version": "${{ steps.plugin_version.outputs.VER }}", "min_wp_version": "${{ steps.min_wp_version.outputs.VER }}", "min_php_version": "${{ steps.min_php_version.outputs.VER }}"}'
+        preventFailureOnNoResponse: true
