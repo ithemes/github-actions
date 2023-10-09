@@ -17,7 +17,7 @@ inputs:
   aws_access_key_id:
     description: 'AWS Access Key ID'
     required: true
-  aws_access_key_secret:
+  aws_secret_access_key:
     description: 'AWS Access Key Secret'
     required: true
 
@@ -74,7 +74,7 @@ runs:
     - name: Upload to S3
       env:
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_access_key_secret }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
       shell: bash
       run: |
         aws s3 cp --region us-east-1 ${{ inputs.plugin_slug }}.zip s3://downloads.ithemes.com/products/plugins/${{ inputs.plugin_slug }}/${{ inputs.plugin_slug }}-${{ steps.plugin_version.outputs.VER }}.zip
