@@ -58,7 +58,7 @@ runs:
         release_name: Release v${{ steps.plugin_version.outputs.VER }}
         draft: false
         prerelease: false
-        target_commitish: ${{ inputs.ref }}
+        commitish: ${{ inputs.ref }}
 
     - name: Upload Release Asset
       id: upload-release-asset
