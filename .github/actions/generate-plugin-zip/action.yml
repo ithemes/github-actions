@@ -17,7 +17,7 @@ runs:
 
     # Upload the plugin artifact as a ZIP file
     - name: Upload plugin artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{inputs.plugin_slug}}
         path: ${{github.workspace}}/${{inputs.plugin_slug}}
