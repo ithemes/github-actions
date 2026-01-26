@@ -2,6 +2,12 @@
 
 GitHub Actions used within the product ecosystem
 
+## Table of Contents
+
+- [Usage](#usage)
+- [Generate Plugin Zip GitHub Workflow](#generate-plugin-zip-github-workflow)
+- [Plugin Release](#plugin-release)
+
 ## Usage
 
 This is a work in progress. The goal is to replace the existing iThemes Build system with GitHub Actions.
