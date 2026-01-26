@@ -36,6 +36,12 @@ runs:
       run: |
         echo "VER=$(grep "Requires at least:" *.php | head -1 | awk '{print $NF}')" >> $GITHUB_OUTPUT
 
+    - name: Get Tested WP Version
+      id: tested_wp_version
+      shell: bash
+      run: |
+        echo "VER=$(grep "Tested up to:" *.php | head -1 | awk '{print $NF}')" >> $GITHUB_OUTPUT
+
     - name: Get Minimum PHP Version
       id: min_php_version
       shell: bash
@@ -86,5 +92,5 @@ runs:
         url: 'https://api.ithemes.com/product/deploy_plugin_update'
         method: 'POST'
         customHeaders: '{"Authorization": "${{ inputs.plugin_deploy_key }}"}'
-        data: '{"slug": "${{ inputs.plugin_slug }}", "version": "${{ steps.plugin_version.outputs.VER }}", "min_wp_version": "${{ steps.min_wp_version.outputs.VER }}", "min_php_version": "${{ steps.min_php_version.outputs.VER }}"}'
+        data: '{"slug": "${{ inputs.plugin_slug }}", "version": "${{ steps.plugin_version.outputs.VER }}", "min_wp_version": "${{ steps.min_wp_version.outputs.VER }}", "tested_wp_version": "${{ steps.tested_wp_version.outputs.VER }}", "min_php_version": "${{ steps.min_php_version.outputs.VER }}"}'
         preventFailureOnNoResponse: true
