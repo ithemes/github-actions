@@ -38,7 +38,7 @@ To trigger this workflow manually, navigate to the "Actions" tab in your reposit
 
 ## Plugin Release
 
-The `create-release` action (`.github/actions/create-release/action.yml`) automates the full release process for a
+The [create-release action](.github/actions/create-release/action.yml) automates the full release process for a
 plugin. It is designed to be consumed within a plugin's own release workflow.
 
 ### Inputs
